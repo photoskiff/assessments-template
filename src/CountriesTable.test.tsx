@@ -4,7 +4,6 @@ import { CountriesTable } from "./CountriesTable";
 import { sampleData } from './model/sampleData';
 import userEvent from '@testing-library/user-event';
 
-
 describe("countries table tests", () => {
     const getButton = (name: "desc" | "asc" | "reset") => screen.getByRole('button', { name })
     describe("initialization tests", () => {
@@ -56,7 +55,7 @@ describe("countries table tests", () => {
     describe("filtering tests", () => {
         it("should filter by name", async () => {
             render(<CountriesTable countries={sampleData} />);
-            await waitFor(() =>  userEvent.type(screen.getByRole('textbox'), "f"));
+            await waitFor(() => userEvent.type(screen.getByRole('textbox'), "f"));
             expect(screen.getByText("FRA")).toBeInTheDocument();
             expect(screen.getByText("RUS")).toBeInTheDocument();
             expect(screen.queryByText("BEL")).toBeNull();
@@ -85,6 +84,24 @@ describe("countries table tests", () => {
             expect(screen.queryByText("FRA")).toBeNull();
             expect(screen.queryByText("GGY")).toBeNull();
         });
+        it("should change filter selection if typed '/' or '//'", () => {
+            render(<CountriesTable countries={sampleData} />);
+            userEvent.type(screen.getByRole('textbox'), "/");
+            const combo = screen.getByRole('combobox');
+            expect(combo).toHaveValue("/");
+            expect(combo).toHaveTextContent("alpha2Code");
+            userEvent.type(screen.getByRole('textbox'), "/");
+            expect(combo).toHaveTextContent("alpha3Code");
+        });
+        it("should change text to '/' or '//' if filter selection changed", () => {
+            render(<CountriesTable countries={sampleData} />);
+            const combo = screen.getByRole('combobox');
+            const text = screen.getByRole('textbox');
+            userEvent.selectOptions(combo, "/");
+            expect(text).toHaveValue("/");
+            userEvent.selectOptions(combo, "//");
+            expect(text).toHaveValue("//");
+        });
         it.skip("should reset filter on escape key press", async () => {
             render(<CountriesTable countries={sampleData} />);
             var textbox = screen.getByRole('textbox');
@@ -102,7 +119,7 @@ describe("countries table tests", () => {
         });
     });
 
-    describe("combine sorting & filtering", () =>{
+    describe("combine sorting & filtering", () => {
         it("should not lose sort when filtered", () => {
             render(<CountriesTable countries={sampleData} />);
             fireEvent.click(getButton("desc"));

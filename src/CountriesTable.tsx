@@ -1,9 +1,9 @@
-import React, { KeyboardEvent, useEffect, useState } from 'react';
+import React, { KeyboardEvent, useEffect, useRef, useState } from 'react';
 import { ChangeEvent } from 'react';
 import { Country } from './model/country';
 import './style.css';
 
-const Cell = ({ ...props }) => <div className="cell" {...props}/>;
+const Cell = ({ ...props }) => <div className="cell" {...props} />;
 
 const CountryRow = ({ c, ...props }: { c: Country }) => {
   const ccyDisplay = (code: string) => code === "(none)" ? "" : code ?? "";
@@ -34,10 +34,11 @@ const getFilterValues = (word: string): [field: ActiveField, filter: string] => 
   return [field, word.replaceAll('/', "")];
 }
 
-export const CountriesTable = ({ countries }: { countries: Country[] | undefined }) => {
+export const CountriesTable = ({ countries }: { countries: Country[] | undefined }): JSX.Element => {
   const [filtered, setFiltered] = useState<Country[]>();
   const [filterWord, setFilterWord] = useState("");
   const [order, setOrder] = useState<Order>();
+  let textbox = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const [field, value] = getFilterValues(filterWord);
@@ -50,7 +51,10 @@ export const CountriesTable = ({ countries }: { countries: Country[] | undefined
   }, [order, filterWord, countries]);
 
   const filterCountry = (e: ChangeEvent<HTMLInputElement>) => {
-    setFilterWord(e.target.value.toLowerCase());
+    let val = e.target.value;
+    if(val.split('/').length > 3)
+      val = '//';
+    setFilterWord(val.toLowerCase());
   }
 
   const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
@@ -59,11 +63,22 @@ export const CountriesTable = ({ countries }: { countries: Country[] | undefined
     }
   }
 
+  const updateFilterWord = (e: ChangeEvent<HTMLSelectElement>) => {
+    textbox.current?.focus();
+    setFilterWord(e.target.value + filterWord.replaceAll('/', ''));
+  }
+
   return <div>
-    <div className='rowContainer' style={{ width: 600, marginBottom: 10 }}>
-      <input onKeyDown={handleKeyPress} onChange={filterCountry} value={filterWord}
-        placeholder="[text] - filter by name, [/text] - by alpha2, [//text] - by alpha3 [Esc] - clear"
-        style={{ width: 440 }} />
+    <div className='evenContainer' style={{ width: 718, marginBottom: 10 }}>
+      <input ref={textbox}  onKeyDown={handleKeyPress} onChange={filterCountry} value={filterWord}
+        placeholder="type to filter, press [Esc] to clear"
+        style={{ width: 260, marginRight: 10 }} />
+      <div>filter by</div>
+      <select onChange={updateFilterWord} value={filterWord.replace(/[^/]+/i, "")}>
+        <option value="">name</option>
+        <option value="/">alpha2Code</option>
+        <option value="//">alpha3Code</option>
+      </select><div>sort by population</div>
       <button onClick={() => setOrder("asc")} disabled={order === "asc"}>asc</button>
       <button onClick={() => setOrder(undefined)} disabled={!order}>reset</button>
       <button onClick={() => setOrder("desc")} disabled={order === "desc"}>desc</button>

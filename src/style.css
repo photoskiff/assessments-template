@@ -1,7 +1,8 @@
 .content {
     max-width          : 800px;
     margin             : auto;
-    /* background-color: ghostwhite; */
+    background-color: ghostwhite;
+    padding: 10px;
 }
 
 h1 {
@@ -11,6 +12,12 @@ h1 {
 .rowContainer {
     display       : flex;
     flex-direction: row;
+}
+
+.evenContainer{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
 }
 
 .cell {
