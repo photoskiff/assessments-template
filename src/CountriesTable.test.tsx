@@ -84,6 +84,12 @@ describe("countries table tests", () => {
             expect(screen.queryByText("FRA")).toBeNull();
             expect(screen.queryByText("GGY")).toBeNull();
         });
+        it("should revert to '//' if user typed more than two '/'s", () => {
+            render(<CountriesTable countries={sampleData} />);
+            const text = screen.getByRole('textbox');
+            userEvent.type(text, "///");
+            expect(text).toHaveValue("//");
+        });
         it("should change filter selection if typed '/' or '//'", () => {
             render(<CountriesTable countries={sampleData} />);
             userEvent.type(screen.getByRole('textbox'), "/");
@@ -136,7 +142,5 @@ describe("countries table tests", () => {
             expect(screen.queryByText("GGY")).toBeNull();
             expect(screen.getByTestId("first-row")).toHaveTextContent("RUS");
         });
-
     });
-
 })
