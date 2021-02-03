@@ -3,9 +3,6 @@ import { CountriesTable } from './CountriesTable';
 import { Country } from './model/country';
 import './style.css';
 
-
-
-
 const App = ({service}: {service: () => Promise<Country[]>}) => {
   const [countries, setCountries] = useState<Country[]>();
   useEffect(() => {

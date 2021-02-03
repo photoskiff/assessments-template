@@ -1,17 +1,16 @@
-import React, { FunctionComponent, KeyboardEvent, useEffect, useState } from 'react';
+import React, { KeyboardEvent, useEffect, useState } from 'react';
 import { ChangeEvent } from 'react';
 import { Country } from './model/country';
 import './style.css';
 
-const Cell: FunctionComponent<any> = ({ ...props }) => <div className="cell" {...props}></div>;
+const Cell = ({ ...props }) => <div className="cell" {...props}/>;
 
 const CountryRow = ({ c, ...props }: { c: Country }) => {
-  const ccyDisplay = (code:string) => code === "(none)" ? "" : code ?? "";
+  const ccyDisplay = (code: string) => code === "(none)" ? "" : code ?? "";
   const curr = c.currencies.reduce<string>((acc, ccy) => acc === "" ? ccyDisplay(ccy?.code) : `${acc}, ${ccyDisplay(ccy?.code)}`, "")
-  //const currTitle = c.currencies.length < 2 ? "currency" : "currencies";
   return <div className="rowContainer">
-    <div style={{marginTop:2}}>
-      <img width={14} height={14} src={c.flag} alt='flag'/>
+    <div style={{ marginTop: 2 }}>
+      <img width={14} height={14} src={c.flag} alt='flag' />
     </div>
     <Cell style={{ width: 350 }}>{c.name}</Cell>
     <Cell style={{ width: 50 }}>{c.alpha2Code}</Cell>
@@ -23,12 +22,17 @@ const CountryRow = ({ c, ...props }: { c: Country }) => {
 }
 
 const CountriesTableImpl = ({ countries }: { countries: Country[] | undefined }) => {
-  if (!countries)
-    return <div>loading...</div>;
-  return <div>{countries.map((c, i) => i > 0 ? <CountryRow  key={c.alpha3Code} c={c} /> : <CountryRow key={c.alpha3Code} c={c} data-testid="first-row"/>)}</div>;
+  return !countries ? <div>loading...</div>
+    : <div>{countries.map((c, i) => i > 0 ? <CountryRow key={c.alpha3Code} c={c} /> : <CountryRow key={c.alpha3Code} c={c} data-testid="first-row" />)}</div>;
 }
 
 type Order = "asc" | "desc" | undefined;
+type ActiveField = keyof Pick<Country, "name" | "alpha2Code" | "alpha3Code">;
+
+const getFilterValues = (word: string): [field: ActiveField, filter: string] => {
+  const field: ActiveField = (word.includes('//') ? "alpha3Code" : word.includes('/') ? "alpha2Code" : "name");
+  return [field, word.replaceAll('/', "")];
+}
 
 export const CountriesTable = ({ countries }: { countries: Country[] | undefined }) => {
   const [filtered, setFiltered] = useState<Country[]>();
@@ -36,15 +40,7 @@ export const CountriesTable = ({ countries }: { countries: Country[] | undefined
   const [order, setOrder] = useState<Order>();
 
   useEffect(() => {
-    let field: keyof Pick<Country, "name" | "alpha2Code" | "alpha3Code"> = "name";
-    let value = filterWord;
-    if (value.includes('//')) {
-      field = "alpha3Code";
-      value = value.substr(2);
-    } else if (value.includes('/')) {
-      field = "alpha2Code";
-      value = value.substr(1);
-    }
+    const [field, value] = getFilterValues(filterWord);
     const result = countries?.filter(c => c[field].toLowerCase().includes(value));
     let preFiltered = result;
     if (order) {
@@ -59,7 +55,6 @@ export const CountriesTable = ({ countries }: { countries: Country[] | undefined
 
   const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Escape") {
-      setFiltered(countries);
       setFilterWord("");
     }
   }
@@ -73,7 +68,6 @@ export const CountriesTable = ({ countries }: { countries: Country[] | undefined
       <button onClick={() => setOrder(undefined)} disabled={!order}>reset</button>
       <button onClick={() => setOrder("desc")} disabled={order === "desc"}>desc</button>
     </div>
-
     <CountriesTableImpl countries={filtered} />
   </div>
 }
