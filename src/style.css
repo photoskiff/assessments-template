@@ -1,0 +1,20 @@
+.content {
+    max-width          : 800px;
+    margin             : auto;
+    /* background-color: ghostwhite; */
+}
+
+h1 {
+    text-align: left;
+}
+
+.rowContainer {
+    display       : flex;
+    flex-direction: row;
+}
+
+.cell {
+    /* margin: 2px; */
+    padding: 2px;
+    /* background-color: lavenderblush; */
+}
