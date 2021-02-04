@@ -61,7 +61,7 @@ type FilterCriteria = {
 const createFilterCriteria = (field: ActiveField) => {
   return {
     field,
-    prompt: `type to filter by ${field}, press 'Esq' to reset, '/' or '\\' to rotate filter`,
+    prompt: `type to filter by ${field}, press 'Esc' to reset, '/' or '\\' to rotate filter`,
     func: getFilter(field)
   }
 }

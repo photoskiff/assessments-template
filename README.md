@@ -5,7 +5,7 @@ When working on the solution I had several goals:
 - I added filtering on currency as I saw a very good reason for users to find out groups of countries that use the same currcency
 - from the design perspective I tried to follow SOLID design principlesa and more functional approach
 - I also covered most of the functionality with unit tests using testing library that makes it easier to use behavioral driven testing
-- I didn't used any third party libraries and used basic css for styling to get a bare-bone minimalistic application. Another reason is restrictions in the requirements for using therd party packages
+- I didn't use any third party libraries and used basic css for styling to get a bare-bone minimalistic application. Another reason is restrictions in the requirements for using third party packages
 - I tried not to overengineer the application as it would have lost its simplicity. However I used general good design principles such as DI to easily inject a server function, without using jest mocks, also made design for filtering easily extendable. For sorting I used a quick solution
 
 
