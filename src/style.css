@@ -53,15 +53,53 @@ th {
     padding   : 8px;
 }
 
-.ccy{
+.ccy {
     width: 40px;
 }
 
-.population{
+.population {
     text-align: right;
 }
 
 tr:nth-child(even) {
     /* background-color:rgb(228, 228, 235); */
     background-color: rgb(228, 240, 248);
+}
+
+button {
+    background-color: ghostwhite;
+    border-radius   : 6px;
+    border          : 1px solid #a69ec6;
+
+}
+
+.headerText {
+    margin-top: 3px;
+    color     : slategrey;
+}
+
+
+input[type=text],
+select {
+    /* width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0; */
+    display      : inline-block;
+    border       : 1px solid #a69ec6;
+    border-radius: 6px;
+    box-sizing   : border-box;
+}
+
+input{
+    display      : inline-block;
+    border       : 1px solid #a69ec6;
+    border-radius: 4px;
+    box-sizing   : border-box;
+}
+
+input:focus {
+    outline: none !important;
+    border       : 1px solid #46405f;
+    border-radius: 4px;
+    /* box-shadow: 0 0 10px #719ECE; */
 }

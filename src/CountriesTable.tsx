@@ -123,10 +123,11 @@ export const CountriesTable = ({ countries }: { countries: Country[] | undefined
       <input ref={textbox} onKeyDown={handleKeyPress} onChange={filterCountry} value={filterWord}
         placeholder={filterCriteria.prompt}
         style={{ width: 310, marginRight: 10 }} />
-      <div>filter by</div>
+      <div className="headerText">filter by</div>
       <select onChange={updateFilter} value={filterCriteria.field}>
         {filterFields.map(f => <option value={f} key={f}>{f}</option>)}
-      </select><div>sort by population</div>
+      </select>
+      <div className="headerText">sort by population</div>
       <button onClick={() => setOrder("asc")} disabled={order === "asc"}>asc</button>
       <button onClick={() => setOrder(undefined)} disabled={!order}>reset</button>
       <button onClick={() => setOrder("desc")} disabled={order === "desc"}>desc</button>
