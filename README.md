@@ -3,7 +3,7 @@ When working on the solution I had several goals:
 - I went for a minimalistic UI design that stays within the requirements and at the same time has some practical value. Also I wanted this small program to be very easy to use.
 - For this reason I added 2 ways of switching filtered fields - using a selector control and also doing it from the command line by continuously pressing the '/' or '\' characters
 - I added filtering on currency as I saw a very good reason for users to find out groups of countries that use the same currency
-- from the design perspective I tried to follow SOLID design principles and more functional approach
+- from the design perspective I followed SOLID design principles and functional programming best practices
 - I also covered most of the functionality with unit tests using testing library that makes it easier to use behavioral driven testing
 - I didn't use any third party libraries and used basic css for styling to get a bare-bone minimalistic application. Another reason is restrictions in the requirements for using third party packages
 - I tried not to over engineer the application as it would have lost its simplicity. However I used general good design principles such as DI to easily inject a server function, without using jest mocks, also made design for filtering easily extendable. For sorting I used a quick solution
