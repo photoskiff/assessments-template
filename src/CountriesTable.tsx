@@ -1,6 +1,6 @@
 import React, { KeyboardEvent, useEffect, useRef, useState } from 'react';
 import { ChangeEvent } from 'react';
-import { Country } from './model/country';
+import { Country, Currency } from './model/country';
 import './style.css';
 
 const Cell = ({ ...props }) => <div className="cell" {...props} />;
@@ -27,12 +27,21 @@ const CountriesTableImpl = ({ countries }: { countries: Country[] | undefined })
 }
 
 type Order = "asc" | "desc" | undefined;
-type ActiveField = keyof Pick<Country, "name" | "alpha2Code" | "alpha3Code">;
+type ActiveField = keyof Pick<Country, "name" | "alpha2Code" | "alpha3Code" | "currencies">;
 
 const getFilterValues = (word: string): [field: ActiveField, filter: string] => {
-  const field: ActiveField = (word.includes('//') ? "alpha3Code" : word.includes('/') ? "alpha2Code" : "name");
-  return [field, word.replaceAll('/', "")];
+  const field: ActiveField = (word.includes('//') ? "alpha3Code" : word.includes('/') ? "alpha2Code" : word.includes("\\") ? "currencies" : "name");
+  return [field, word.replaceAll('/', "").replaceAll('\\', "")];
 }
+
+type Stringy = any & string;
+// const isStringy = (w : any) : w is Stringy => (w as string).charAt !== undefined;
+
+const filterField = (v: Stringy, data: Stringy | Currency[]) : boolean => {
+  if(data.charAt) return data.toLowerCase().includes(v.toLowerCase());
+  return data.some((d:Currency) => d?.code?.toLowerCase().includes(v.toLowerCase()));
+}
+
 
 export const CountriesTable = ({ countries }: { countries: Country[] | undefined }): JSX.Element => {
   const [filtered, setFiltered] = useState<Country[]>();
@@ -42,7 +51,7 @@ export const CountriesTable = ({ countries }: { countries: Country[] | undefined
 
   useEffect(() => {
     const [field, value] = getFilterValues(filterWord);
-    const result = countries?.filter(c => c[field].toLowerCase().includes(value));
+    const result = countries?.filter(c => filterField(value, c[field]));
     let preFiltered = result;
     if (order) {
       preFiltered = preFiltered?.sort((a, b) => order === "asc" ? a.population - b.population : b.population - a.population);
@@ -52,7 +61,7 @@ export const CountriesTable = ({ countries }: { countries: Country[] | undefined
 
   const filterCountry = (e: ChangeEvent<HTMLInputElement>) => {
     let val = e.target.value;
-    if(val.split('/').length > 3)
+    if (val.split('/').length > 3)
       val = '//';
     setFilterWord(val.toLowerCase());
   }
@@ -65,19 +74,20 @@ export const CountriesTable = ({ countries }: { countries: Country[] | undefined
 
   const updateFilterWord = (e: ChangeEvent<HTMLSelectElement>) => {
     textbox.current?.focus();
-    setFilterWord(e.target.value + filterWord.replaceAll('/', ''));
+    setFilterWord(e.target.value + filterWord.replaceAll('/', '').replaceAll('\\', ''));
   }
 
   return <div>
     <div className='evenContainer' style={{ width: 718, marginBottom: 10 }}>
-      <input ref={textbox}  onKeyDown={handleKeyPress} onChange={filterCountry} value={filterWord}
+      <input ref={textbox} onKeyDown={handleKeyPress} onChange={filterCountry} value={filterWord}
         placeholder="type to filter, press [Esc] to clear"
         style={{ width: 260, marginRight: 10 }} />
       <div>filter by</div>
-      <select onChange={updateFilterWord} value={filterWord.replace(/[^/]+/i, "")}>
+      <select onChange={updateFilterWord} value={filterWord.replace(/[^/\\]+/i, "")}>
         <option value="">name</option>
         <option value="/">alpha2Code</option>
         <option value="//">alpha3Code</option>
+        <option value="\">currencies</option>
       </select><div>sort by population</div>
       <button onClick={() => setOrder("asc")} disabled={order === "asc"}>asc</button>
       <button onClick={() => setOrder(undefined)} disabled={!order}>reset</button>
