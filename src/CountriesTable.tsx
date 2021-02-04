@@ -5,7 +5,6 @@ import './style.css';
 
 const numberWithCommas = (x: number) => x && x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
-
 const CountryRow = ({ c, ...props }: { c: Country }) => {
   const ccyDisplay = (code: string) => code === "(none)" ? "" : code ?? "";
   const curr = c.currencies.reduce<string>((acc, ccy) => acc === "" ? ccyDisplay(ccy?.code) : `${acc}, ${ccyDisplay(ccy?.code)}`, "")
@@ -29,7 +28,7 @@ const CountriesTableImpl = ({ countries }: { countries: Country[] | undefined })
   return <table>
     <thead>
       <tr>
-        <th></th><th>Country</th><th>Alpha2</th><th>Alpha3</th><th>Population</th><th>Currencies</th><th>Capital</th>
+        <th></th><th>Name</th><th>Alpha2</th><th>Alpha3</th><th>Population</th><th>Currencies</th><th>Capital</th>
       </tr>
     </thead>
     <tbody>
