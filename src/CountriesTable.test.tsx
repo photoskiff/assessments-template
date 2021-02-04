@@ -67,9 +67,13 @@ describe("countries table tests", () => {
             expect(screen.queryByText("GGY")).toBeNull();
         });
 
-        it("should filter by alpha2", () => {
+        it("should filter by alpha2", async () => {
             render(<CountriesTable countries={sampleData} />);
-            userEvent.type(screen.getByRole('textbox'), "/f");
+            // const combo = screen.getByRole('combobox');
+            // userEvent.selectOptions(combo, 'alpha2Code')
+            const text = screen.getByRole('textbox');
+            userEvent.type(text, "/");
+            userEvent.type(screen.getByRole('textbox'), "f");
             expect(screen.getByText("FRA")).toBeInTheDocument();
             expect(screen.queryByText("RUS")).toBeNull();
             expect(screen.queryByText("BEL")).toBeNull();
@@ -78,35 +82,36 @@ describe("countries table tests", () => {
 
         it("should filter by alpha3", () => {
             render(<CountriesTable countries={sampleData} />);
-            userEvent.type(screen.getByRole('textbox'), "//bel");
+            const text = screen.getByRole('textbox');
+            userEvent.type(text, "/");
+            userEvent.type(text, "/");
+            userEvent.type(screen.getByRole('textbox'), "bel");
             expect(screen.getByText("BEL")).toBeInTheDocument();
             expect(screen.queryByText("RUS")).toBeNull();
             expect(screen.queryByText("FRA")).toBeNull();
             expect(screen.queryByText("GGY")).toBeNull();
         });
-        it("should revert to '//' if user typed more than two '/'s", () => {
+        it("should rotate filter selection forward and change prompt if typed '/'", () => {
             render(<CountriesTable countries={sampleData} />);
             const text = screen.getByRole('textbox');
-            userEvent.type(text, "///");
-            expect(text).toHaveValue("//");
-        });
-        it("should change filter selection if typed '/' or '//'", () => {
-            render(<CountriesTable countries={sampleData} />);
-            userEvent.type(screen.getByRole('textbox'), "/");
+            userEvent.type(text, "/");
             const combo = screen.getByRole('combobox');
-            expect(combo).toHaveValue("/");
-            expect(combo).toHaveTextContent("alpha2Code");
-            userEvent.type(screen.getByRole('textbox'), "/");
+            expect(combo).toHaveValue("alpha2Code");
+            expect(screen.queryByPlaceholderText(/alpha2Code/i)).toBeInTheDocument();
+            userEvent.type(text, "/");
             expect(combo).toHaveTextContent("alpha3Code");
+            expect(screen.queryByPlaceholderText(/alpha3Code/i)).toBeInTheDocument();
         });
-        it("should change text to '/' or '//' if filter selection changed", () => {
+        it("should rotate filter selection backward and change prompt if typed '/'", () => {
             render(<CountriesTable countries={sampleData} />);
-            const combo = screen.getByRole('combobox');
             const text = screen.getByRole('textbox');
-            userEvent.selectOptions(combo, "/");
-            expect(text).toHaveValue("/");
-            userEvent.selectOptions(combo, "//");
-            expect(text).toHaveValue("//");
+            userEvent.type(text, "\\");
+            const combo = screen.getByRole('combobox');
+            expect(combo).toHaveValue("currencies");
+            expect(screen.queryByPlaceholderText(/currencies/i)).toBeInTheDocument();
+            userEvent.type(text, "\\");
+            expect(combo).toHaveTextContent("alpha3Code");
+            expect(screen.queryByPlaceholderText(/alpha3Code/i)).toBeInTheDocument();
         });
         it.skip("should reset filter on escape key press", async () => {
             render(<CountriesTable countries={sampleData} />);

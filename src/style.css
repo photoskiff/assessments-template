@@ -2,7 +2,9 @@
     max-width          : 800px;
     margin             : auto;
     background-color: ghostwhite;
-    padding: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top:10px;
 }
 
 h1 {
@@ -24,4 +26,10 @@ h1 {
     /* margin: 2px; */
     padding: 2px;
     /* background-color: lavenderblush; */
+}
+
+::placeholder{
+    /* color:red; */
+    opacity: .5;
+    font-size: 10px;
 }

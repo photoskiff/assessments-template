@@ -1,6 +1,6 @@
 import React, { KeyboardEvent, useEffect, useRef, useState } from 'react';
 import { ChangeEvent } from 'react';
-import { Country, Currency } from './model/country';
+import { Country } from './model/country';
 import './style.css';
 
 const Cell = ({ ...props }) => <div className="cell" {...props} />;
@@ -28,42 +28,71 @@ const CountriesTableImpl = ({ countries }: { countries: Country[] | undefined })
 
 type Order = "asc" | "desc" | undefined;
 type ActiveField = keyof Pick<Country, "name" | "alpha2Code" | "alpha3Code" | "currencies">;
+const filterFields: ActiveField[] = ["name", "alpha2Code", "alpha3Code", "currencies"];
 
-const getFilterValues = (word: string): [field: ActiveField, filter: string] => {
-  const field: ActiveField = (word.includes('//') ? "alpha3Code" : word.includes('/') ? "alpha2Code" : word.includes("\\") ? "currencies" : "name");
-  return [field, word.replaceAll('/', "").replaceAll('\\', "")];
+
+type FieldFilter = ((word: string, country: Country) => boolean) | undefined;
+const simpleFilter = (word: string, field: string) => field?.toLowerCase().includes(word.toLowerCase());
+
+const getFilter = (field: ActiveField): FieldFilter => {
+  if (!field) return undefined;
+  if (field !== "currencies") return (word, country) => simpleFilter(word, country[field]);
+  else if (field === "currencies") return (word, country) => country.currencies.some(c => simpleFilter(word, c?.code));
+  return undefined;
 }
 
-type Stringy = any & string;
-// const isStringy = (w : any) : w is Stringy => (w as string).charAt !== undefined;
-
-const filterField = (v: Stringy, data: Stringy | Currency[]) : boolean => {
-  if(data.charAt) return data.toLowerCase().includes(v.toLowerCase());
-  return data.some((d:Currency) => d?.code?.toLowerCase().includes(v.toLowerCase()));
+type FilterCriteria = {
+  field: ActiveField,
+  prompt: string
+  func: FieldFilter;
 }
 
+const createFilterCriteria = (field: ActiveField) => {
+  return {
+    field,
+    prompt: `type to filter by ${field}, press 'Esq' to reset, '/' or '\\' to rotate filter`,
+    func: getFilter(field)
+  }
+}
 
 export const CountriesTable = ({ countries }: { countries: Country[] | undefined }): JSX.Element => {
   const [filtered, setFiltered] = useState<Country[]>();
   const [filterWord, setFilterWord] = useState("");
   const [order, setOrder] = useState<Order>();
+  const [filterCriteria, setFilterCriteria] = useState<FilterCriteria>(createFilterCriteria("name"))
   let textbox = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    const [field, value] = getFilterValues(filterWord);
-    const result = countries?.filter(c => filterField(value, c[field]));
+    const fieldFilter = filterCriteria.func;
+    const result = !fieldFilter ? countries : countries?.filter(c => fieldFilter(filterWord, c));
     let preFiltered = result;
     if (order) {
       preFiltered = preFiltered?.sort((a, b) => order === "asc" ? a.population - b.population : b.population - a.population);
     }
     setFiltered(preFiltered);
-  }, [order, filterWord, countries]);
+    textbox.current?.focus();
+  }, [order, filterWord, countries, filterCriteria]);
+
+  const updateFilterCriteria = (field: ActiveField) => {
+    setFilterWord("");
+    setFilterCriteria(createFilterCriteria(field));
+  }
+
+  const rotateFilterCriteria = (val: string) => {
+    if (!"\\/".includes(val)) return false;
+    let max = filterFields.length - 1;
+    let index = filterFields.indexOf(filterCriteria.field);
+    if (val === '/')
+      index = index === max ? 0 : index + 1;
+    else
+      index = index === 0 ? max : index - 1;
+    updateFilterCriteria(filterFields[index]);
+    return true;
+  }
 
   const filterCountry = (e: ChangeEvent<HTMLInputElement>) => {
     let val = e.target.value;
-    if (val.split('/').length > 3)
-      val = '//';
-    setFilterWord(val.toLowerCase());
+    rotateFilterCriteria(val) || setFilterWord(val);
   }
 
   const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
@@ -72,22 +101,19 @@ export const CountriesTable = ({ countries }: { countries: Country[] | undefined
     }
   }
 
-  const updateFilterWord = (e: ChangeEvent<HTMLSelectElement>) => {
-    textbox.current?.focus();
-    setFilterWord(e.target.value + filterWord.replaceAll('/', '').replaceAll('\\', ''));
+  const updateFilter = (e: ChangeEvent<HTMLSelectElement>) => {
+    const field = e.target.value as ActiveField;
+    updateFilterCriteria(field);
   }
 
   return <div>
-    <div className='evenContainer' style={{ width: 718, marginBottom: 10 }}>
+    <div className='evenContainer' style={{ width: 730, marginBottom: 10 }}>
       <input ref={textbox} onKeyDown={handleKeyPress} onChange={filterCountry} value={filterWord}
-        placeholder="type to filter, press [Esc] to clear"
-        style={{ width: 260, marginRight: 10 }} />
+        placeholder={filterCriteria.prompt}
+        style={{ width: 310, marginRight: 10 }} />
       <div>filter by</div>
-      <select onChange={updateFilterWord} value={filterWord.replace(/[^/\\]+/i, "")}>
-        <option value="">name</option>
-        <option value="/">alpha2Code</option>
-        <option value="//">alpha3Code</option>
-        <option value="\">currencies</option>
+      <select onChange={updateFilter} value={filterCriteria.field}>
+        {filterFields.map(f => <option value={f} key={f}>{f}</option>)}
       </select><div>sort by population</div>
       <button onClick={() => setOrder("asc")} disabled={order === "asc"}>asc</button>
       <button onClick={() => setOrder(undefined)} disabled={!order}>reset</button>
