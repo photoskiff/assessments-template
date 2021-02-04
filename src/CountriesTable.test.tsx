@@ -69,8 +69,6 @@ describe("countries table tests", () => {
 
         it("should filter by alpha2", async () => {
             render(<CountriesTable countries={sampleData} />);
-            // const combo = screen.getByRole('combobox');
-            // userEvent.selectOptions(combo, 'alpha2Code')
             const text = screen.getByRole('textbox');
             userEvent.type(text, "/");
             userEvent.type(screen.getByRole('textbox'), "f");
@@ -140,13 +138,12 @@ describe("countries table tests", () => {
             expect(screen.getByTestId("first-row")).toHaveTextContent("RUS");
         });
         it("should not lose filter when sorted", () => {
-            const {debug} = render(<CountriesTable countries={sampleData} />);
+            render(<CountriesTable countries={sampleData} />);
             userEvent.type(screen.getByRole('textbox'), "f");
             fireEvent.click(getButton("desc"));
             expect(screen.queryByText("BEL")).toBeNull();
             expect(screen.queryByText("GGY")).toBeNull();
             expect(screen.getByTestId("first-row")).toHaveTextContent("RUS");
-            // debug();
         });
     });
 })
