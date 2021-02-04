@@ -1,10 +1,15 @@
+body {
+    font-family: arial, sans-serif;
+    font-size  : small;
+}
+
 .content {
-    max-width          : 800px;
-    margin             : auto;
+    max-width       : 800px;
+    margin          : auto;
     background-color: ghostwhite;
-    padding-left: 20px;
-    padding-right: 20px;
-    padding-top:10px;
+    padding-left    : 20px;
+    padding-right   : 20px;
+    padding-top     : 10px;
 }
 
 h1 {
@@ -16,20 +21,47 @@ h1 {
     flex-direction: row;
 }
 
-.evenContainer{
-    display: flex;
-    flex-direction: row;
+.evenContainer {
+    display        : flex;
+    flex-direction : row;
     justify-content: space-between;
 }
 
 .cell {
     /* margin: 2px; */
-    padding: 2px;
+    padding            : 2px;
     /* background-color: lavenderblush; */
 }
 
-::placeholder{
+::placeholder {
     /* color:red; */
-    opacity: .5;
+    opacity  : .5;
     font-size: 10px;
+    color    : rgb(102, 144, 172);
+}
+
+table {
+    font-family    : arial, sans-serif;
+    border-collapse: collapse;
+    width          : 100%;
+}
+
+td,
+th {
+    border    : 1px solid #dddddd;
+    text-align: left;
+    padding   : 8px;
+}
+
+.ccy{
+    width: 40px;
+}
+
+.population{
+    text-align: right;
+}
+
+tr:nth-child(even) {
+    /* background-color:rgb(228, 228, 235); */
+    background-color: rgb(228, 240, 248);
 }

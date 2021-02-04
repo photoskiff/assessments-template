@@ -3,27 +3,39 @@ import { ChangeEvent } from 'react';
 import { Country } from './model/country';
 import './style.css';
 
-const Cell = ({ ...props }) => <div className="cell" {...props} />;
+const numberWithCommas = (x: number) => x && x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
 
 const CountryRow = ({ c, ...props }: { c: Country }) => {
   const ccyDisplay = (code: string) => code === "(none)" ? "" : code ?? "";
   const curr = c.currencies.reduce<string>((acc, ccy) => acc === "" ? ccyDisplay(ccy?.code) : `${acc}, ${ccyDisplay(ccy?.code)}`, "")
-  return <div className="rowContainer">
-    <div style={{ marginTop: 2 }}>
+  return <tr>
+    <td style={{ marginTop: 2 }}>
       <img width={14} height={14} src={c.flag} alt='flag' />
-    </div>
-    <Cell style={{ width: 350 }}>{c.name}</Cell>
-    <Cell style={{ width: 50 }}>{c.alpha2Code}</Cell>
-    <Cell {...props} style={{ width: 50 }}>{c.alpha3Code}</Cell>
-    <Cell style={{ width: 120, textAlign: "end" }}>{c.population}</Cell>
-    <Cell style={{ width: 120, textAlign: "end" }}>{curr}</Cell>
-    <Cell style={{ width: 300, marginLeft: 20 }}>{c.capital}</Cell>
-  </div>
+    </td>
+    <td>{c.name}</td>
+    <td>{c.alpha2Code}</td>
+    <td {...props}>{c.alpha3Code}</td>
+    <td className="population">{numberWithCommas(c.population)}</td>
+    <td className="ccy">{curr}</td>
+    <td>{c.capital}</td>
+  </tr>
 }
 
 const CountriesTableImpl = ({ countries }: { countries: Country[] | undefined }) => {
-  return !countries ? <div>loading...</div>
-    : <div>{countries.map((c, i) => i > 0 ? <CountryRow key={c.alpha3Code} c={c} /> : <CountryRow key={c.alpha3Code} c={c} data-testid="first-row" />)}</div>;
+  if (!countries) return <div>loading...</div>
+  const getCountryRow = (c: Country, i: number) => i > 0 ? <CountryRow key={c.alpha3Code} c={c} />
+    : <CountryRow key={c.alpha3Code} c={c} data-testid="first-row" />;
+  return <table>
+    <thead>
+      <tr>
+        <th></th><th>Country</th><th>Alpha2</th><th>Alpha3</th><th>Population</th><th>Currencies</th><th>Capital</th>
+      </tr>
+    </thead>
+    <tbody>
+      {countries.map((c, i) => getCountryRow(c, i))}
+    </tbody>
+  </table>
 }
 
 type Order = "asc" | "desc" | undefined;

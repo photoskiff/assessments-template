@@ -140,12 +140,13 @@ describe("countries table tests", () => {
             expect(screen.getByTestId("first-row")).toHaveTextContent("RUS");
         });
         it("should not lose filter when sorted", () => {
-            render(<CountriesTable countries={sampleData} />);
+            const {debug} = render(<CountriesTable countries={sampleData} />);
             userEvent.type(screen.getByRole('textbox'), "f");
             fireEvent.click(getButton("desc"));
             expect(screen.queryByText("BEL")).toBeNull();
             expect(screen.queryByText("GGY")).toBeNull();
             expect(screen.getByTestId("first-row")).toHaveTextContent("RUS");
+            // debug();
         });
     });
 })
