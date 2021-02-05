@@ -128,7 +128,7 @@ describe("countries table tests", () => {
         });
     });
 
-    describe("combine sorting & filtering", () => {
+    describe("combined sorting & filtering tests", () => {
         it("should not lose sort when filtered", () => {
             render(<CountriesTable countries={sampleData} />);
             fireEvent.click(getButton("desc"));
