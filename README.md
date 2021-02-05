@@ -1,17 +1,17 @@
 # Implementation Notes
 ## Application Usage
-- filter dataset by typing in the text box. Change the filtering column by choosing it with the 'filter by' selector control. You can also rotate filtering columns by continuously pressing either '/' or '\' (backwards rotation) inside the text box
-- press 'Esc' to clear the text box.
-- open the country details screen by clicking a corresponding flag icon in a row
-- sort countries by population using the 'asc','desc','reset' buttons
+- Filter the countries table by typing in the text field. Change the filtering column by choosing it with the 'filter by' selector. You can also rotate filtering columns by continuously pressing either '/' or '\\' (backwards rotation) inside the text field.
+- Press 'Esc' to clear the text field.
+- Open the country details screen by clicking a corresponding flag icon in a table row
+- Sort countries by population using the 'asc', 'desc', and 'reset' buttons
 ## Development Approach
 When working on the solution I had several goals:
 - I went for a minimalistic UI design that stays within the requirements and at the same time has some practical value. Also I wanted this small program to be very easy to use.
 - For this reason I added 2 ways of switching filtered fields - using a selector control and also doing it from the command line by continuously pressing the '/' or '\' characters
-- from the design perspective I followed SOLID design principles and functional programming best practices
+- From the design perspective I followed SOLID design principles and functional programming best practices
 - I also covered most of the functionality with unit tests using testing library that makes it easier to use behavioral driven testing
-- I didn't use any third party libraries and used basic css for styling to get a bare-bone minimalistic application. Another reason is restrictions in the requirements for using third party packages
-- I tried not to over engineer the application as it would have lost its simplicity. However I used general good design principles such as DI to easily inject a server function, without using jest mocks, also made design for filtering easily extendable. 
+- I didn't use any third party libraries and used basic css for styling to get a bare-bone minimalistic application. Another reason was restrictions in the requirements for using third party packages
+- I tried not to over engineer the application as it would have lost its simplicity. However I used general good design principles such as DI to inject a server function and avoid using of jest mocks. I also made design for filtering easily extendable for adding more filtered fields with custom filter criteria.
 
 # Assessment Documentation
 
