@@ -100,7 +100,7 @@ describe("countries table tests", () => {
             expect(combo).toHaveTextContent("alpha3Code");
             expect(screen.queryByPlaceholderText(/alpha3Code/i)).toBeInTheDocument();
         });
-        it("should rotate filter selection backward and change prompt if typed '/'", () => {
+        it("should rotate filter selection backward and change prompt if typed '\\'", () => {
             render(<CountriesTable countries={sampleData} />);
             const text = screen.getByRole('textbox');
             userEvent.type(text, "\\");
@@ -147,7 +147,7 @@ describe("countries table tests", () => {
         });
     });
     describe("popup tests", () => {
-        it("should show correct popup when clicked on row", () => {
+        it("should show correct popup when clicked on flag", () => {
             render(<CountriesTable countries={sampleData} />);
             const flag = screen.getByTestId(/fra/i);
             fireEvent.click(flag);
