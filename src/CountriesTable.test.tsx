@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { CountriesTable } from "./CountriesTable";
 import { sampleData } from './model/sampleData';
 import userEvent from '@testing-library/user-event';
@@ -149,12 +149,15 @@ describe("countries table tests", () => {
     describe("popup tests", () => {
         it("should show correct popup when clicked on row", () => {
             render(<CountriesTable countries={sampleData} />);
+            const flag = screen.getByTestId(/fra/i);
+            fireEvent.click(flag);
             fireEvent.click(screen.getByTestId("first-row"));
             expect(screen.getByRole('heading', {  name: /france/i})).toBeInTheDocument();
         });
         it("should close popup when clicked on close button", () => {
             render(<CountriesTable countries={sampleData} />);
-            fireEvent.click(screen.getByTestId("first-row"));
+            const flag = screen.getByTestId(/fra/i);
+            fireEvent.click(flag);
             fireEvent.click(screen.getByTestId("popupCloser"));
             expect(screen.queryByRole('heading', { name: /france/i})).toBeNull();
         });

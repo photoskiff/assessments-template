@@ -1,5 +1,10 @@
 # Implementation Notes
-
+## Application Usage
+- filter dataset by typing in the text box. Change the filtering column by choosing it with the 'filter by' selector control. You can also rotate filtering columns by continuously pressing either '/' or '\' (backwards rotation) inside the text box
+- press 'Esc' to clear the text box.
+- open the country details screen by clicking a corresponding flag icon in a row
+- sort countries by population using the 'asc','desc','reset' buttons
+## Development Approach
 When working on the solution I had several goals:
 - I went for a minimalistic UI design that stays within the requirements and at the same time has some practical value. Also I wanted this small program to be very easy to use.
 - For this reason I added 2 ways of switching filtered fields - using a selector control and also doing it from the command line by continuously pressing the '/' or '\' characters

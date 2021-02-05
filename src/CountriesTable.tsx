@@ -9,8 +9,8 @@ const numberWithCommas = (x: number) => x && x.toString().replace(/\B(?=(\d{3})+
 const ccyDisplay = (code: string) => code === "(none)" ? "" : code ?? "";
 const CountryRow = ({ c, showDetail, ...props }: { c: Country, showDetail: (d: Country) => void }) => {
   const curr = c.currencies.reduce<string>((acc, ccy) => acc === "" ? ccyDisplay(ccy?.code) : `${acc}, ${ccyDisplay(ccy?.code)}`, "")
-  return <tr onClick={() => showDetail(c)}>
-    <td style={{ marginTop: 2 }}>
+  return <tr >
+    <td style={{ marginTop: 2, cursor:"pointer" }} onClick={() => showDetail(c)} data-testid={`flag${c.alpha3Code}`}>
       <img width={14} height={14} src={c.flag} alt='flag' />
     </td>
     <td>{c.name}</td>
