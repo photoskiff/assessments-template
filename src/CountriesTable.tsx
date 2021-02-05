@@ -27,10 +27,10 @@ const CountryDetail = ({ c, ...props }: { c: Country | undefined }) => {
   const curr = c.currencies.reduce<string>((acc, ccy) => acc === "" ? ccyDisplay(ccy?.code) : `${acc}, ${ccyDisplay(ccy?.code)}`, "");
   const lang = c.languages.reduce<string>((acc, lang) => acc === "" ? lang.name : `${acc}, ${lang.name}`, "");
   return <div style={{width:500}}>
-    <h2>{c.name}</h2>
+    <h2 style={{marginBottom:0}}>{c.name}</h2>
     <div className="evenContainer">
-      <div style={{width:300}}>
-        <h3>Capital</h3>
+      <div style={{width:300, marginRight:10}}>
+        <h3>Capital City</h3>
         <div>{c.capital}</div>
         <h3>{c.currencies.length < 2 ? "Currency" : "Currencies"}</h3>
         <div>{curr}</div>
@@ -38,7 +38,7 @@ const CountryDetail = ({ c, ...props }: { c: Country | undefined }) => {
         <div>{lang}</div>
       </div>
       <div>
-        <img width={200} height={100} src={c.flag} alt='flag' />
+        <img width={240} height={120} src={c.flag} alt='flag' />
       </div>
     </div>
   </div>

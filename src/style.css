@@ -125,7 +125,7 @@ input:focus {
   
   /* Modal Content/Box */
   .modal-content {
-    background-color:rgb(169, 225, 247);
+    background-color:rgb(228, 240, 248);
     margin: 15% auto; /* 15% from the top and centered */
     padding: 0px 20px 40px 20px;
     border: 1px solid #888;
