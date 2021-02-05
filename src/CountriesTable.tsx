@@ -1,14 +1,15 @@
 import React, { KeyboardEvent, useEffect, useRef, useState } from 'react';
 import { ChangeEvent } from 'react';
+import { Modal } from './components/Modal';
 import { Country } from './model/country';
 import './style.css';
 
 const numberWithCommas = (x: number) => x && x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
-const CountryRow = ({ c, ...props }: { c: Country }) => {
-  const ccyDisplay = (code: string) => code === "(none)" ? "" : code ?? "";
+const ccyDisplay = (code: string) => code === "(none)" ? "" : code ?? "";
+const CountryRow = ({ c, showDetail, ...props }: { c: Country, showDetail: (d: Country) => void }) => {
   const curr = c.currencies.reduce<string>((acc, ccy) => acc === "" ? ccyDisplay(ccy?.code) : `${acc}, ${ccyDisplay(ccy?.code)}`, "")
-  return <tr>
+  return <tr onClick={() => showDetail(c)}>
     <td style={{ marginTop: 2 }}>
       <img width={14} height={14} src={c.flag} alt='flag' />
     </td>
@@ -21,20 +22,57 @@ const CountryRow = ({ c, ...props }: { c: Country }) => {
   </tr>
 }
 
+const CountryDetail = ({ c, ...props }: { c: Country | undefined }) => {
+  if (!c) return <></>;
+  const curr = c.currencies.reduce<string>((acc, ccy) => acc === "" ? ccyDisplay(ccy?.code) : `${acc}, ${ccyDisplay(ccy?.code)}`, "");
+  const lang = c.languages.reduce<string>((acc, lang) => acc === "" ? lang.name : `${acc}, ${lang.name}`, "");
+  return <div style={{width:500}}>
+    <h2>{c.name}</h2>
+    <div className="evenContainer">
+      <div style={{width:300}}>
+        <h3>Capital</h3>
+        <div>{c.capital}</div>
+        <h3>{c.currencies.length < 2 ? "Currency" : "Currencies"}</h3>
+        <div>{curr}</div>
+        <h3>{c.languages.length < 2 ? "Language" : "Languages"}</h3>
+        <div>{lang}</div>
+      </div>
+      <div>
+        <img width={200} height={100} src={c.flag} alt='flag' />
+      </div>
+    </div>
+  </div>
+}
+
 const CountriesTableImpl = ({ countries }: { countries: Country[] | undefined }) => {
+  const [showDialog, setShowDialog] = useState(false);
+  const [selectedCountry, setSelectedCountry] = useState<Country>();
   if (!countries) return <div>loading...</div>
-  const getCountryRow = (c: Country, i: number) => i > 0 ? <CountryRow key={c.alpha3Code} c={c} />
-    : <CountryRow key={c.alpha3Code} c={c} data-testid="first-row" />;
-  return <table>
-    <thead>
-      <tr>
-        <th></th><th>Name</th><th>Alpha2</th><th>Alpha3</th><th>Population</th><th>Currencies</th><th>Capital</th>
-      </tr>
-    </thead>
-    <tbody>
-      {countries.map((c, i) => getCountryRow(c, i))}
-    </tbody>
-  </table>
+
+  const showCountry = (c: Country) => {
+    setSelectedCountry(c);
+    showModal();
+  }
+  const getCountryRow = (c: Country, i: number) => i > 0 ? <CountryRow key={c.alpha3Code} c={c} showDetail={showCountry} />
+    : <CountryRow key={c.alpha3Code} c={c} data-testid="first-row" showDetail={showCountry} />;
+  const showModal = () => setShowDialog(true);
+  const hideModal = () => setShowDialog(false);
+
+  return <div>
+    <Modal show={showDialog} onClose={hideModal}>
+      <div style={{ width: 200, height: 200 }}><CountryDetail c={selectedCountry} /></div>
+    </Modal>
+    <table>
+      <thead>
+        <tr>
+          <th></th><th>Name</th><th>Alpha2</th><th>Alpha3</th><th>Population</th><th>Currencies</th><th>Capital</th>
+        </tr>
+      </thead>
+      <tbody>
+        {countries.map((c, i) => getCountryRow(c, i))}
+      </tbody>
+    </table>
+  </div>
 }
 
 type Order = "asc" | "desc" | undefined;
@@ -70,7 +108,7 @@ export const CountriesTable = ({ countries }: { countries: Country[] | undefined
   const [filtered, setFiltered] = useState<Country[]>();
   const [filterWord, setFilterWord] = useState("");
   const [order, setOrder] = useState<Order>();
-  const [filterCriteria, setFilterCriteria] = useState<FilterCriteria>(createFilterCriteria("name"))
+  const [filterCriteria, setFilterCriteria] = useState<FilterCriteria>(createFilterCriteria("name"));
   let textbox = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -118,6 +156,7 @@ export const CountriesTable = ({ countries }: { countries: Country[] | undefined
   }
 
   return <div>
+
     <div className='evenContainer' style={{ width: 730, marginBottom: 10 }}>
       <input ref={textbox} onKeyDown={handleKeyPress} onChange={filterCountry} value={filterWord}
         placeholder={filterCriteria.prompt}
