@@ -14,7 +14,7 @@ export const Modal: FunctionComponent<ModalProps> = ({ show, onClose, children, 
 
     return <div id="myModal" className="modal" style={visible ? { display: "block" } : { display: "none" }}>
         <div className="modal-content">
-            <span className="close" onClick={onClose}>&times;</span>
+            <span className="close" onClick={onClose} data-testid="popupCloser">&times;</span>
             <div >{children}</div>
         </div>
     </div>

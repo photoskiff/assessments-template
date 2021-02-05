@@ -6,9 +6,7 @@ When working on the solution I had several goals:
 - from the design perspective I followed SOLID design principles and functional programming best practices
 - I also covered most of the functionality with unit tests using testing library that makes it easier to use behavioral driven testing
 - I didn't use any third party libraries and used basic css for styling to get a bare-bone minimalistic application. Another reason is restrictions in the requirements for using third party packages
-- I tried not to over engineer the application as it would have lost its simplicity. However I used general good design principles such as DI to easily inject a server function, without using jest mocks, also made design for filtering easily extendable. For sorting I used a quick solution
-as only sorting on one field was required
-
+- I tried not to over engineer the application as it would have lost its simplicity. However I used general good design principles such as DI to easily inject a server function, without using jest mocks, also made design for filtering easily extendable. 
 
 # Assessment Documentation
 

@@ -146,4 +146,17 @@ describe("countries table tests", () => {
             expect(screen.getByTestId("first-row")).toHaveTextContent("RUS");
         });
     });
+    describe("popup tests", () => {
+        it("should show correct popup when clicked on row", () => {
+            render(<CountriesTable countries={sampleData} />);
+            fireEvent.click(screen.getByTestId("first-row"));
+            expect(screen.getByRole('heading', {  name: /france/i})).toBeInTheDocument();
+        });
+        it("should close popup when clicked on close button", () => {
+            render(<CountriesTable countries={sampleData} />);
+            fireEvent.click(screen.getByTestId("first-row"));
+            fireEvent.click(screen.getByTestId("popupCloser"));
+            expect(screen.queryByRole('heading', { name: /france/i})).toBeNull();
+        });
+    })
 })
