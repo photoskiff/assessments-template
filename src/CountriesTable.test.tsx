@@ -111,16 +111,14 @@ describe("countries table tests", () => {
             expect(combo).toHaveTextContent("alpha3Code");
             expect(screen.queryByPlaceholderText(/alpha3Code/i)).toBeInTheDocument();
         });
-        it.skip("should reset filter on escape key press", async () => {
+        it("should reset filter on escape key press", async () => {
             render(<CountriesTable countries={sampleData} />);
             var textbox = screen.getByRole('textbox');
             userEvent.type(textbox, "f");
             expect(screen.queryByText("BEL")).toBeNull();
             expect(screen.queryByText("GGY")).toBeNull();
-            //can't make keyPress working for some reason
             fireEvent.focus(textbox);
-            waitFor(() => fireEvent.keyPress(textbox, { key: 'Escape', keyCode: 27 }));
-            // userEvent.type(textbox, "{esc}");
+            await waitFor(() => fireEvent.keyDown(textbox, { key: 'Escape', keyCode: 27 }));
             expect(screen.queryByText("BEL")).toBeInTheDocument();
             expect(screen.queryByText("GGY")).toBeInTheDocument();
             expect(screen.getByText("FRA")).toBeInTheDocument();

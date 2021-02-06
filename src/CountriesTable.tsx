@@ -144,7 +144,7 @@ export const CountriesTable = ({ countries }: { countries: Country[] | undefined
     rotateFilterCriteria(val) || setFilterWord(val);
   }
 
-  const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Escape") {
       setFilterWord("");
     }
@@ -158,7 +158,7 @@ export const CountriesTable = ({ countries }: { countries: Country[] | undefined
   return <div>
 
     <div className='evenContainer' style={{ width: 730, marginBottom: 10 }}>
-      <input ref={textbox} onKeyDown={handleKeyPress} onChange={filterCountry} value={filterWord}
+      <input ref={textbox} onKeyDown={handleKeyDown} onChange={filterCountry} value={filterWord}
         placeholder={filterCriteria.prompt}
         style={{ width: 310, marginRight: 10 }} />
       <div className="headerText">filter by</div>
