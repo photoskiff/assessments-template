@@ -111,7 +111,7 @@ describe("countries table tests", () => {
             expect(combo).toHaveTextContent("alpha3Code");
             expect(screen.queryByPlaceholderText(/alpha3Code/i)).toBeInTheDocument();
         });
-        it("should reset filter on escape key press", async () => {
+        it("should reset filter on escape key down", async () => {
             render(<CountriesTable countries={sampleData} />);
             var textbox = screen.getByRole('textbox');
             userEvent.type(textbox, "f");
